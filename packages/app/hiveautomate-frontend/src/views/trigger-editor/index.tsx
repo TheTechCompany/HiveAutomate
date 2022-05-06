@@ -1,29 +1,29 @@
 import { Box, Button, Collapsible, List, Spinner, Text } from 'grommet';
-import { Uri } from 'monaco-editor';
-import { Save } from 'grommet-icons'
 import React, { useState } from 'react';
 import AceEditor from "react-ace";
 import "ace-builds/src-noconflict/mode-yaml";
 import "ace-builds/src-noconflict/theme-github";
-import { mutation, useMutation } from '@hexhive/client';
-import { RouteComponentProps } from 'react-router-dom';
+import { mutation, useMutation } from '@hiveautomate/api';
+import { useParams } from 'react-router-dom';
 import { useEffect } from 'react';
-import { Add, Upload } from 'grommet-icons';
+import { Add, Upload, Save } from '@mui/icons-material';
 import { PortModal } from '../../modals/port-modal';
 import { EventModal } from '../../modals/event-modal';
 import { gql, useQuery } from '@apollo/client';
 
-export interface TriggerEditorProps extends RouteComponentProps<{id: string}> {
+export interface TriggerEditorProps {
 
 }
 
 export const TriggerEditor : React.FC<TriggerEditorProps> = (props) => {
     // const query = useQuery({suspense: false})
 
+    const { id } = useParams()
+
 
     const {data} = useQuery(gql`
         query Q {
-            hivePipelineTriggers(where: {id: "${props.match.params.id}"}){
+            hivePipelineTriggers(where: {id: "${id}"}){
                 name
                 
                 produces {
@@ -41,28 +41,28 @@ export const TriggerEditor : React.FC<TriggerEditorProps> = (props) => {
     // const task = query.hivePipelineTriggers({where: {id: props.match.params.id}})
     
     const [ updateTrigger, updateInfo ] = useMutation((mutation, args: {id: string, event: string, }) => {
-        const trigger = mutation.updateHivePipelineTriggers({where: {id: args.id}, update: {
-            event: args.event
-        }})
-        return {
-            item: {
-                ...trigger.hivePipelineTriggers[0]
-            },
-            err: null
-        }
+        // const trigger = mutation.updateHivePipelineTriggers({where: {id: args.id}, update: {
+        //     event: args.event
+        // }})
+        // return {
+        //     item: {
+        //         ...trigger.hivePipelineTriggers[0]
+        //     },
+        //     err: null
+        // }
     })
 
         
     const [ addTriggerProduce, addInfo ] = useMutation((mutation, args: {id: string, name: string, type: string }) => {
-        const trigger = mutation.updateHivePipelineTriggers({where: {id: args.id}, update: {
-            produces: [{create: [{node: {name: args.name, type: args.type, direction: 'output'}}]}]
-        }})
-        return {
-            item: {
-                ...trigger.hivePipelineTriggers[0]
-            },
-            err: null
-        }
+        // const trigger = mutation.updateHivePipelineTriggers({where: {id: args.id}, update: {
+        //     produces: [{create: [{node: {name: args.name, type: args.type, direction: 'output'}}]}]
+        // }})
+        // return {
+        //     item: {
+        //         ...trigger.hivePipelineTriggers[0]
+        //     },
+        //     err: null
+        // }
     })
     // const [ publishTask, publishInfo ] = useMutation((mutation, args: {id: string}) => {
     //     const item = mutation.publishHiveTask({id: args.id})  
@@ -157,7 +157,7 @@ export const TriggerEditor : React.FC<TriggerEditorProps> = (props) => {
                     open={menuOpen == 'produces'}
                     onSubmit={(port) => {
                         addTriggerProduce({args: {
-                            id: props.match.params.id,
+                            id: id,
                             name: port.name,
                             type: port.type,
                         }})

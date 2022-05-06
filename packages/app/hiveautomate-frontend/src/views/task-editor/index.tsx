@@ -1,48 +1,48 @@
 import { Box, Button, Collapsible, List, Spinner, Text } from 'grommet';
-import { Uri } from 'monaco-editor';
-import { Save } from 'grommet-icons'
+import { Save, Upload, Add } from '@mui/icons-material'
 import React, { useState } from 'react';
 import AceEditor from "react-ace";
 import "ace-builds/src-noconflict/mode-yaml";
 import "ace-builds/src-noconflict/theme-github";
-import { mutation, useMutation, useQuery } from '@hexhive/client';
-import { RouteComponentProps } from 'react-router-dom';
+import { mutation, useMutation, useQuery } from '@hiveautomate/api';
+import { useParams } from 'react-router-dom';
 import { useEffect } from 'react';
-import { Add, Upload } from 'grommet-icons';
 import { PortModal } from '../../modals/port-modal';
 
-export interface TaskEditorProps extends RouteComponentProps<{id: string}> {
+export interface TaskEditorProps {
 
 }
 
 export const TaskEditor : React.FC<TaskEditorProps> = (props) => {
     const query = useQuery({suspense: false})
 
+    const { id } = useParams()
+
     const [ saving, setSaving ] = useState<boolean>(false)
-    const task = query.hiveProcesses({where: {id: props.match.params.id}})
-    const taskPorts = query.hiveProcessPorts({where: {
-        process: {id: props.match.params.id}
-    }})
+    const task = [] //query.hiveProcesses({where: {id: id}})
+    const taskPorts = [] // query.hiveProcessPorts({where: {
+    //     process: {id: id}
+    // }})
     const [ updateTask, updateInfo ] = useMutation((mutation, args: {task: string}) => {
-        const item = mutation.updateHiveProcesses({where: {id: props.match.params.id}, update: {
-            task: args.task
-        }})
-        return {
-            item: {
-                ...item.hiveProcesses[0]
-            },
-            err: null
-        }
+        // const item = mutation.updateHiveProcesses({where: {id: id}, update: {
+        //     task: args.task
+        // }})
+        // return {
+        //     item: {
+        //         ...item.hiveProcesses[0]
+        //     },
+        //     err: null
+        // }
     })
 
     const [ publishTask, publishInfo ] = useMutation((mutation, args: {id: string}) => {
-        const item = mutation.publishHiveTask({id: args.id})  
-        return {
-            item: {
-                success: true
-            },
-            err: null
-        }
+        // const item = mutation.publishHiveTask({id: args.id})  
+        // return {
+        //     item: {
+        //         success: true
+        //     },
+        //     err: null
+        // }
     })
 
 
@@ -59,13 +59,13 @@ export const TaskEditor : React.FC<TaskEditorProps> = (props) => {
         let update = {
             ports: create
         }
-        const item = mutation.updateHiveProcesses({where: {id: props.match.params.id}, update: update})
-        return {
-            item: {
-                ...item.hiveProcesses[0]
-            },
-            err: null
-        }
+        // const item = mutation.updateHiveProcesses({where: {id: id}, update: update})
+        // return {
+        //     item: {
+        //         ...item.hiveProcesses[0]
+        //     },
+        //     err: null
+        // }
     })
 
     const [ taskDefinition, setTaskDefinition ] = useState<string>('')
@@ -106,7 +106,7 @@ export const TaskEditor : React.FC<TaskEditorProps> = (props) => {
                 <Box direction="row">
                     <Button 
                         onClick={() => {
-                            publishTask({args: {id: props.match.params.id}})
+                            publishTask({args: {id: id}})
                         }}
                         hoverIndicator
                         icon={<Upload />} />

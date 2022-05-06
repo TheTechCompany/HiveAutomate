@@ -1,34 +1,36 @@
 import { Box, Button, List } from 'grommet';
 import React, { useState } from 'react';
-import { Add } from 'grommet-icons';
-import { mutation, useMutation, useQuery } from '@hexhive/client'
+import { Add } from '@mui/icons-material';
+import { mutation, useMutation, useQuery } from '@hiveautomate/api'
 import { WorkflowModal } from '../../modals/workflow-modal';
-import { RouteComponentProps } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
-export interface WorkflowListProps extends RouteComponentProps {
+export interface WorkflowListProps {
 
 }
 
 export const WorkflowList : React.FC<WorkflowListProps> = (props) => {
+    const navigate = useNavigate()
+
     const [ modalOpen, openModal ] = useState<boolean>(false);
 
     const query = useQuery()
 
     const [ createWorkflow, createInfo ] = useMutation((mutation, args: {name: string}) => {
-        const item = mutation.createHivePipelines({input: [{name: args.name}]})
-        return {
-            item: {
-                ...item.hivePipelines[0]
-            },
-            err: null
-        }
+        // const item = mutation.createHivePipelines({input: [{name: args.name}]})
+        // return {
+        //     item: {
+        //         ...item.hivePipelines[0]
+        //     },
+        //     err: null
+        // }
     }, {
         suspense: false,
         awaitRefetchQueries: true,
-        refetchQueries: [query.hivePipelines()]
+        refetchQueries: [] //[query.hivePipelines()]
     })
     // const workflow = query.hivePi
-    const workflows = query.hivePipelines();
+    const workflows = [] // query.hivePipelines();
 
     return (
         <Box
@@ -49,7 +51,7 @@ export const WorkflowList : React.FC<WorkflowListProps> = (props) => {
                 <Button onClick={() => openModal(true)} icon={<Add />} />
             </Box>
             <List 
-                onClickItem={({item}) => props.history.push(`${props.match.url}/${item.id}`)}
+                onClickItem={({item}) => navigate(`${item.id}`)}
                 primaryKey={"name"}
                 data={workflows} />
         </Box>

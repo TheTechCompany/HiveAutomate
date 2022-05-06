@@ -1,6 +1,6 @@
 import { Box, Text, List } from 'grommet';
 import React from 'react';
-import { Switch, Route, matchPath} from 'react-router-dom'
+import { Routes, Route, matchPath, Outlet, useNavigate} from 'react-router-dom'
 import { TaskEditor } from './views/task-editor';
 import { TaskList } from './views/task-list';
 import { Workflows } from './views/workflow-editor';
@@ -16,9 +16,11 @@ const client = new ApolloClient({
     credentials: 'include'
 })
 
-export const App = (props) => {
+export const App = (props: any) => {
+    const navigate = useNavigate();
+
     const changeView = (name: string) => {
-        props.history.push(name)   
+        navigate(name)   
     }
 
     const menu = [
@@ -57,7 +59,7 @@ export const App = (props) => {
                             focusIndicator={false}
                             hoverIndicator
                             pad={'xsmall'}
-                            background={matchPath(window.location.pathname, {path: `/dashboard/automate${datum.path}`}) ? 'accent-2': ''}
+                            // background={matchPath(window.location.pathname, {path: `/dashboard/automate${datum.path}`}) ? 'accent-2': ''}
                             direction="row">
                             <Text>{datum.label}</Text>
                         </Box>
@@ -68,15 +70,22 @@ export const App = (props) => {
                 style={{borderRadius: 8, overflow: 'hidden'}}
                 flex 
                 pad="xsmall">
-                <Switch>
-                    <Route path={"/"} exact component={HomeView} />
-                    <Route path={"/workflows"} exact component={WorkflowList} />
-                    <Route path={"/workflows/:id"} exact component={Workflows} />
-                    <Route path={"/tasks"} exact component={TaskList} />
-                    <Route path={"/tasks/:id"} component={TaskEditor} />
-                    <Route path={`/triggers`} exact component={TriggerList} />
-                    <Route path={`/triggers/:id`} exact component={TriggerEditor} />
-                </Switch>
+                <Routes>
+                    <Route path={""} element={<HomeView/>} />
+                    <Route path={"workflows"} element={<Outlet />}>
+                        <Route path="" element={<WorkflowList/>} />
+                        <Route path=":id" element={<Workflows />} />
+                    </Route>
+                    <Route path={"tasks"} element={<Outlet />}>
+                        <Route path="" element={<TaskList />} />
+                    <Route path={":id"} element={<TaskEditor/>} />
+
+                    </Route>
+                    <Route path={`triggers`} element={<Outlet/>} >
+                        <Route path="" element={<TriggerList/>} />
+                        <Route path={':id'} element={<TriggerEditor />} />
+                    </Route>
+                </Routes>
             </Box>
 
         </Box>

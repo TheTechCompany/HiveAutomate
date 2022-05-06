@@ -1,35 +1,37 @@
 import { Box, Button, List } from 'grommet';
 import React, { useState } from 'react';
-import { Add } from 'grommet-icons';
-import { mutation, useMutation, useQuery } from '@hexhive/client'
+import { Add } from '@mui/icons-material';
+import { mutation, useMutation, useQuery } from '@hiveautomate/api'
 import { WorkflowModal } from '../../modals/workflow-modal';
-import { RouteComponentProps } from 'react-router-dom';
+import {  useNavigate } from 'react-router-dom';
 import { TaskModal } from '../../modals/task-modal';
 
-export interface TriggerListProps extends RouteComponentProps {
+export interface TriggerListProps {
 
 }
 
 export const TriggerList : React.FC<TriggerListProps> = (props) => {
     const [ modalOpen, openModal ] = useState<boolean>(false);
 
+    const navigate = useNavigate()
+
     const query = useQuery()
 
     const [ createTrigger, createInfo ] = useMutation((mutation, args: {name: string}) => {
-        const item = mutation.createHivePipelineTriggers({input: [{name: args.name}]})
-        return {
-            item: {
-                ...item.hivePipelineTriggers[0]
-            },
-            err: null
-        }
+        // const item = mutation.createHivePipelineTriggers({input: [{name: args.name}]})
+        // return {
+        //     item: {
+        //         ...item.hivePipelineTriggers[0]
+        //     },
+        //     err: null
+        // }
     }, {
         suspense: false,
         awaitRefetchQueries: true,
-        refetchQueries: [query.hivePipelineTriggers()]
+        refetchQueries: [] // [query.hivePipelineTriggers()]
     })
     // const workflow = query.hivePi
-    const triggers = query.hivePipelineTriggers().map((x) => ({id: x.id, name: x.name}));
+    const triggers = [] //query.hivePipelineTriggers().map((x) => ({id: x.id, name: x.name}));
 
     return (
         <Box
@@ -50,7 +52,7 @@ export const TriggerList : React.FC<TriggerListProps> = (props) => {
                 <Button onClick={() => openModal(true)} icon={<Add />} />
             </Box>
             <List 
-                onClickItem={({item}) => props.history.push(`${props.match.url}/${item.id}`)}
+                onClickItem={({item}) => navigate(`${item.id}`)}
                 primaryKey={"name"}
                 data={triggers} />
         </Box>

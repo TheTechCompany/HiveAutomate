@@ -1,26 +1,28 @@
-import { mutation, useMutation  } from '@hexhive/client';
+import { mutation, useMutation  } from '@hiveautomate/api';
 import { gql, useQuery } from '@apollo/client';
 import { ActionNodeFactory, BlockTray, IconNodeFactory, InfiniteCanvas, StartNodeFactory } from '@hexhive/ui';
 import { Box, Text, List, Button, TextInput } from 'grommet';
 import _, { debounce } from 'lodash';
 import { nanoid } from 'nanoid';
 import React, { useRef, useMemo, useState } from 'react';
-import { RouteComponentProps } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { MultiportNodeFactory } from './nodes/multi-port/factory';
 import { useEffect } from 'react';
-import { Add, Upload, Play } from 'grommet-icons';
+import { Add, Upload, PlayArrow as Play } from '@mui/icons-material';
 import { EditorPane } from '../../components/editor-pane/EditorPane';
 import { RunModal } from '../../modals/run-modal';
 import { getSuggestions } from './utils/getSuggestions';
 import { NodeSettings } from './menu/node-settings';
 
 
-export interface WorkflowsProps extends RouteComponentProps<{id: string}> {
+export interface WorkflowsProps {
 
 }
 
 export const Workflows : React.FC<WorkflowsProps> = (props) => {
     
+    const { id } = useParams()
+
     const [ runParams, setRunParams ] = useState<any[]>([])
 
     const [ runModal, openRun ] = useState<boolean>(false);
@@ -58,7 +60,7 @@ export const Workflows : React.FC<WorkflowsProps> = (props) => {
 
     const {data} = useQuery(gql`
         query Q {
-            hivePipelines(where: {id: "${props.match.params.id}"}){
+            hivePipelines(where: {id: "${id}"}){
                 name
 
                 nodes {
@@ -123,26 +125,26 @@ export const Workflows : React.FC<WorkflowsProps> = (props) => {
     // const workflow = query.hivePipelineNodes({where: {pipeline: {id: props.match.params.id}}})
 
     const [ addWorkflowNode, addNodeInfo ] = useMutation((mutation, args: {runner: string, kind: string, x: number, y: number}) => {
-        let runner : any = {};
+        // let runner : any = {};
 
-        if(args.kind == "Trigger"){
-            runner = {HivePipelineTrigger : {connect: {where: {node: {id: args.runner}}}}}
-        }else {
-            runner = {HiveProcess : {connect: {where: {node: {id: args.runner}}}}}
-        }
-        const item = mutation.updateHivePipelines({where: {id: props.match.params.id}, update: {
-            nodes: [{create: [{node: {
-                runner: runner, // args.runner ,
-                x: args.x,
-                y: args.y,
-            }}]}]
-        }})
-        return {
-            item: {
-                ...item.hivePipelines[0],
-            },
-            err: null
-        }
+        // if(args.kind == "Trigger"){
+        //     runner = {HivePipelineTrigger : {connect: {where: {node: {id: args.runner}}}}}
+        // }else {
+        //     runner = {HiveProcess : {connect: {where: {node: {id: args.runner}}}}}
+        // }
+        // const item = mutation.updateHivePipelines({where: {id: id}, update: {
+        //     nodes: [{create: [{node: {
+        //         runner: runner, // args.runner ,
+        //         x: args.x,
+        //         y: args.y,
+        //     }}]}]
+        // }})
+        // return {
+        //     item: {
+        //         ...item.hivePipelines[0],
+        //     },
+        //     err: null
+        // }
     }, {
         awaitRefetchQueries: true,
         refetchQueries: [ ],
@@ -150,13 +152,13 @@ export const Workflows : React.FC<WorkflowsProps> = (props) => {
     })
 
     const [ runWorkflow, runNodeInfo ] = useMutation((mutation, args: {id: string, params: {key: string, type: string, urn: string}[]}) => {
-        const item = mutation.runWorkflow({id: args.id, params: args.params})
-        return {
-            item: {
-                ...item
-            },
-            err: null
-        }
+        // const item = mutation.runWorkflow({id: args.id, params: args.params})
+        // return {
+        //     item: {
+        //         ...item
+        //     },
+        //     err: null
+        // }
     }, {
         awaitRefetchQueries: true,
         refetchQueries: [ ],
@@ -173,13 +175,13 @@ export const Workflows : React.FC<WorkflowsProps> = (props) => {
 
 const [ publishWorkflow, publishInfo ] = useMutation((mutation, args: {id: string}) => {
     
-    const item = mutation.publishHivePipeline({id:args.id})
-    return {
-        item: {
-            success: true
-        },
-        err: null
-    }
+    // const item = mutation.publishHivePipeline({id:args.id})
+    // return {
+    //     item: {
+    //         success: true
+    //     },
+    //     err: null
+    // }
 }, {
     awaitRefetchQueries: true,
     refetchQueries: [  ],
@@ -188,34 +190,34 @@ const [ publishWorkflow, publishInfo ] = useMutation((mutation, args: {id: strin
 
 
     const [ updateWorkflowNode, updateNodeInfo ] = useMutation((mutation, args: {id: string, runner?: string, x?: number, y?: number, options?: {[key: string]: any}}) => {
-        let node : any = {
+        // let node : any = {
 
-        }
+        // }
 
-        if(args.x) node.x = args.x;
-        if(args.y) node.y = args.y;
+        // if(args.x) node.x = args.x;
+        // if(args.y) node.y = args.y;
 
-        if(args.options) node.options = JSON.stringify(args.options)
+        // if(args.options) node.options = JSON.stringify(args.options)
 
-        if(args.runner) node.runner = {connect: [{where: {node: {id: args.runner}}}]}
+        // if(args.runner) node.runner = {connect: [{where: {node: {id: args.runner}}}]}
 
-        const item = mutation.updateHivePipelines({where: {id: props.match.params.id}, update: {
-            nodes: [{
-                where: {node: {id: args.id}},
-                update: {
-                    node: node,
+        // const item = mutation.updateHivePipelines({where: {id: id}, update: {
+        //     nodes: [{
+        //         where: {node: {id: args.id}},
+        //         update: {
+        //             node: node,
                 
-            }}]
+        //     }}]
         
-        }})
+        // }})
 
-        console.log( item.hivePipelines[0])
-        return {
-            item: {
-                id: item.hivePipelines[0].id
-            },
-            err: null
-        }
+        // console.log( item.hivePipelines[0])
+        // return {
+        //     item: {
+        //         id: item.hivePipelines[0].id
+        //     },
+        //     err: null
+        // }
     }, {
         awaitRefetchQueries: true,
         refetchQueries: [  ],
@@ -227,21 +229,21 @@ const [ publishWorkflow, publishInfo ] = useMutation((mutation, args: {id: strin
 
 
 
-        const item = mutation.updateHivePipelines({where: {id: props.match.params.id}, update: {
-            nodes: [{
-                where: {node: {id: args.id}},
-                delete: [{
-                    where: {node: {id: args.id}},
+        // const item = mutation.updateHivePipelines({where: {id: id}, update: {
+        //     nodes: [{
+        //         where: {node: {id: args.id}},
+        //         delete: [{
+        //             where: {node: {id: args.id}},
                 
-            }]}]
+        //     }]}]
         
-        }})
-        return {
-            item: {
-                ...item.hivePipelines[0],
-            },
-            err: null
-        }
+        // }})
+        // return {
+        //     item: {
+        //         ...item.hivePipelines[0],
+        //     },
+        //     err: null
+        // }
     }, {
         awaitRefetchQueries: true,
         refetchQueries: [  ],
@@ -249,22 +251,22 @@ const [ publishWorkflow, publishInfo ] = useMutation((mutation, args: {id: strin
     })
 
     const [ connectWorkflowNodes, connectInfo ] = useMutation((mutation, args: {id: string, to: string, source: string, target: string}) => {
-        const item = mutation.updateHivePipelines({where: {id: props.match.params.id}, update: {
-            nodes: [{
-                connect: [{
-                    where: {node: {id: args.id}},
-                    connect: [{
-                        next: [{where: {node: {id: args.to}}, edge: { source: args.source, target: args.target } }]
-                    }]
-                }]
-            }]
-        }})
-        return {
-            item: {
-                ...item.hivePipelines[0],
-            },
-            err: null
-        }
+        // const item = mutation.updateHivePipelines({where: {id: id}, update: {
+        //     nodes: [{
+        //         connect: [{
+        //             where: {node: {id: args.id}},
+        //             connect: [{
+        //                 next: [{where: {node: {id: args.to}}, edge: { source: args.source, target: args.target } }]
+        //             }]
+        //         }]
+        //     }]
+        // }})
+        // return {
+        //     item: {
+        //         ...item.hivePipelines[0],
+        //     },
+        //     err: null
+        // }
     })
 
 
@@ -386,16 +388,16 @@ const [ publishWorkflow, publishInfo ] = useMutation((mutation, args: {id: strin
 
                 <Box direction="row">
                 <Button 
-                    onClick={() => publishWorkflow({args: {id: props.match.params.id}})}
+                    onClick={() => publishWorkflow({args: {id: id}})}
                     hoverIndicator
-                    icon={<Upload size={"20px"} />} />
+                    icon={<Upload />} />
                 <Button 
                     onClick={() =>  {
                         openRun(true)
                         //  runWorkflowNode({args: {id: props.match.params.id}})
                     }}
                     hoverIndicator
-                    icon={<Play size={"20px"} />} />
+                    icon={<Play  />} />
                 </Box>
             </Box>
             <RunModal 
@@ -417,7 +419,7 @@ const [ publishWorkflow, publishInfo ] = useMutation((mutation, args: {id: strin
                     }
 
                     runWorkflow({args: {
-                        id: props.match.params.id,
+                        id: id,
                         params: params
                     }})
                     

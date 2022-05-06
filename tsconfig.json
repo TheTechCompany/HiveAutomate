@@ -1,0 +1,8 @@
+{
+  "compilerOptions": {
+    "rootDir": "./packages/",
+    "paths": {
+      "@hiveautomate/api": ["./app/hiveautomate-api/src/gqty"]
+    }
+  }
+}

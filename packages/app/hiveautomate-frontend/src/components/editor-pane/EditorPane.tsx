@@ -1,7 +1,7 @@
 import { Box } from 'grommet';
 import  React from 'react';
 import { EditorMenu } from './EditorMenu';
-import { Nodes, SettingsOption } from 'grommet-icons';
+import { Schema, Settings } from '@mui/icons-material';
 import { useMemo } from 'react';
 
 export interface EditorPaneProps {
@@ -20,8 +20,8 @@ export const EditorPane : React.FC<EditorPaneProps> = (props) => {
     const menu = useMemo(() => {
         console.log(props.view)
         return [
-            {icon: <Nodes />, active: props.view == 'nodes', onClick: () => { onClick('nodes') }},
-            {icon: <SettingsOption />, active: props.view == 'settings', onClick: () => { onClick('settings') }},
+            {icon: <Schema />, active: props.view == 'nodes', onClick: () => { onClick('nodes') }},
+            {icon: <Settings />, active: props.view == 'settings', onClick: () => { onClick('settings') }},
         ]
     }, [props.view])
 

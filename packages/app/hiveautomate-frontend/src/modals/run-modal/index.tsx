@@ -2,7 +2,7 @@ import { gql,useQuery } from '@apollo/client';
 import { BaseModal, FileExplorerModal } from '@hexhive/ui';
 import { Box, TextInput } from 'grommet';
 import React, { useState } from 'react';
-import { Document } from 'grommet-icons';
+import { Article } from '@mui/icons-material';
 import { FileModal } from '../../components/file-modal';
 
 export interface RunModalProps {
@@ -37,7 +37,7 @@ export const RunModal : React.FC<RunModalProps> = (props) => {
                         align="center"
                         onClick={() => openExplorer(param.name)}
                         >
-                            <Document />
+                            <Article />
                             {workState[param.name] ? workState[param.name].map((x) => x.name).join(', ') : param.name}
                     </Box>
                 ): (

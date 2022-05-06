@@ -3,12 +3,13 @@
   "compilerOptions": {
     "jsx": "react-jsx",
     "outDir": "dist",
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "skipLibCheck": true
   },
   "files": ["src/hiveautomate-app-frontend.tsx"],
   "include": ["src/**/*"],
-  "exclude": ["src/**/*.test*"],
+  "exclude": ["src/**/*.test*", "node_modules/"],
   "references": [
-    {"path": "../hiveautomate-api/src/gqty"}
+    {"path": "../hiveautomate-api"}
   ]
 }

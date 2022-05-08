@@ -59,63 +59,18 @@ export const Workflows : React.FC<WorkflowsProps> = (props) => {
     })
 
     const {data} = useQuery(gql`
-        query Q {
-            hivePipelines(where: {id: "${id}"}){
+        query Q ($id: ID) {
+            automations(where: {id: $id}){
+                id
                 name
 
                 nodes {
                     id
-                    x
-                    y
-                    options
-                    runner{
-                      
-                        ... on HiveProcess {
-                            id
-                            name
-    
-                            ports {
-                                direction
-                                type
-                                name
-                                id
-                            }
-                        }
-
-                        ... on HivePipelineTrigger {
-                            id 
-                            name
-                            produces {
-                                id
-                                name
-                            }
-                        }
-                    }
-                    next {
-                        id
-                    }
-                    nextConnection {
-                        edges{
-                          source
-                          target
-                        }
-                    }
-                    callerConnection {
-                        edges {
-                            source
-                            target
-                        }
-                    }
                 }
-            }
-            hiveProcesses{
-                id
-                name
-            }
 
-            hivePipelineTriggers{
-                id
-                name
+                edges {
+                    id
+                }
             }
         }
     `)
@@ -271,77 +226,78 @@ const [ publishWorkflow, publishInfo ] = useMutation((mutation, args: {id: strin
 
 
 
+    const workflow = data?.automations?.[0];
 
-    useEffect(() => {
-        console.log(data)
+    // useEffect(() => {
+    //     console.log(data)
 
     
-        const starters = data?.hivePipelines?.[0]?.nodes?.filter((node) => {
-            return node.callerConnection.edges.length < 1
-        }) 
+    //     const starters = data?.hivePipelines?.[0]?.nodes?.filter((node) => {
+    //         return node.callerConnection.edges.length < 1
+    //     }) 
 
-        console.log(starters)
+    //     console.log(starters)
         
-        // console.log()
+    //     // console.log()
 
-        setRunParams(starters?.reduce((prev, curr) => {
-            let new_items = curr?.runner?.ports?.filter((a) => a.direction == 'input')
-            if(new_items && new_items.length > 0) prev = (prev || []).concat(new_items)
-            return prev
-        }, []) || [])
+    //     setRunParams(starters?.reduce((prev, curr) => {
+    //         let new_items = curr?.runner?.ports?.filter((a) => a.direction == 'input')
+    //         if(new_items && new_items.length > 0) prev = (prev || []).concat(new_items)
+    //         return prev
+    //     }, []) || [])
 
-        setNodes( data?.hivePipelines?.[0]?.nodes?.map((x) => ({
-            ...x, 
-            runner: {
-                ...x.runner,
-                ports: x?.runner.ports || x?.runner.produces?.map((x) => ({...x, direction: "output", type: "File"}))
-            },
-            id: x?.id  || nanoid(), 
-            extras: {title: x?.runner?.name || x?.id}, 
-            type: 'multiport-node'
-        })) || [])
+    //     setNodes( data?.hivePipelines?.[0]?.nodes?.map((x) => ({
+    //         ...x, 
+    //         runner: {
+    //             ...x.runner,
+    //             ports: x?.runner.ports || x?.runner.produces?.map((x) => ({...x, direction: "output", type: "File"}))
+    //         },
+    //         id: x?.id  || nanoid(), 
+    //         extras: {title: x?.runner?.name || x?.id}, 
+    //         type: 'multiport-node'
+    //     })) || [])
 
-        setPaths( data?.hivePipelines?.[0]?.nodes?.filter((a) => a.next).map((x) => {
+    //     setPaths( data?.hivePipelines?.[0]?.nodes?.filter((a) => a.next).map((x) => {
             
-            return x?.next?.map((next, ix) => ({
-                id: nanoid(),
-                source: x.id,
-                sourceHandle: x?.nextConnection?.edges?.[ix]?.source,
-                target: next?.id,
-                points: [],
-                targetHandle: x?.nextConnection?.edges?.[ix]?.target
-            }))
+    //         return x?.next?.map((next, ix) => ({
+    //             id: nanoid(),
+    //             source: x.id,
+    //             sourceHandle: x?.nextConnection?.edges?.[ix]?.source,
+    //             target: next?.id,
+    //             points: [],
+    //             targetHandle: x?.nextConnection?.edges?.[ix]?.target
+    //         }))
         
-        }).reduce((origin, current) => {
-            return origin.concat(current)
-        }, []).concat([
-            {
-                id: 'entrypoint',
-                source: 'entry',
-                sourceHandle: 'entry',
-                target: data?.hivePipelines?.[0]?.first?.id,
-                targetHandle: data?.hivePipelines?.[0]?.firstConnection?.edges?.[0]?.target
-            }
-        ]))
+    //     }).reduce((origin, current) => {
+    //         return origin.concat(current)
+    //     }, []).concat([
+    //         {
+    //             id: 'entrypoint',
+    //             source: 'entry',
+    //             sourceHandle: 'entry',
+    //             target: data?.hivePipelines?.[0]?.first?.id,
+    //             targetHandle: data?.hivePipelines?.[0]?.firstConnection?.edges?.[0]?.target
+    //         }
+    //     ]))
 
-        console.log(data?.hiveProcesses)
+    //     console.log(data?.hiveProcesses)
 
-        setTriggers(data?.hivePipelineTriggers?.map((x) => ({
-            ...x,
-            label: x.name,
-            extras: {kind: 'Trigger', title: x.name, runner: x.id},
-            blockType: 'multiport-node'
-        })) || [])
+    //     setTriggers(data?.hivePipelineTriggers?.map((x) => ({
+    //         ...x,
+    //         label: x.name,
+    //         extras: {kind: 'Trigger', title: x.name, runner: x.id},
+    //         blockType: 'multiport-node'
+    //     })) || [])
 
-        setItems(data?.hiveProcesses?.map((x) => ({
-            ...x, 
-            label: x.name, 
-            extras: {kind: 'Action', title: x.name, runner: x.id}, 
-            blockType: 'multiport-node'
-        })) || [])
+    //     setItems(data?.hiveProcesses?.map((x) => ({
+    //         ...x, 
+    //         label: x.name, 
+    //         extras: {kind: 'Action', title: x.name, runner: x.id}, 
+    //         blockType: 'multiport-node'
+    //     })) || [])
 
-        setProcess(data?.hivePipelines?.[0]?.name)
-    }, [data])
+    //     setProcess(data?.hivePipelines?.[0]?.name)
+    // }, [data])
 
     const startNodes = useMemo(() => {
         let origin = nodes?.filter((a) => {
@@ -384,20 +340,26 @@ const [ publishWorkflow, publishInfo ] = useMutation((mutation, args: {id: strin
                 pad="xsmall"
                 background="accent-2" 
                 direction="row">
-                <Text>{process}</Text>
+                <Text>{workflow?.name}</Text>
 
                 <Box direction="row">
                 <Button 
+                    size="small"
+                    plain 
+                    style={{padding: 6, borderRadius: 3}}
                     onClick={() => publishWorkflow({args: {id: id}})}
                     hoverIndicator
-                    icon={<Upload />} />
+                    icon={<Upload fontSize="small" />} />
                 <Button 
+                    size="small"
+                    plain 
+                    style={{padding: 6, borderRadius: 3}}
                     onClick={() =>  {
                         openRun(true)
                         //  runWorkflowNode({args: {id: props.match.params.id}})
                     }}
                     hoverIndicator
-                    icon={<Play  />} />
+                    icon={<Play fontSize="small" />} />
                 </Box>
             </Box>
             <RunModal 
@@ -461,7 +423,7 @@ const [ publishWorkflow, publishInfo ] = useMutation((mutation, args: {id: strin
                     paths={paths.current.p}
                 
                     factories={[new MultiportNodeFactory(),new ActionNodeFactory(), new IconNodeFactory(), new StartNodeFactory()]}
-                    onDrop={(position, data) => {
+                    onNodeCreate={(position, data) => {
                         console.log("DROP", position, data)
                         let node = {
                             id: nanoid(),
@@ -498,9 +460,7 @@ const [ publishWorkflow, publishInfo ] = useMutation((mutation, args: {id: strin
 
                         setNodes(n)
                     }}
-                    onNodeRemove={(node) => {
-                        console.log("Remove node", node)
-                    }}
+                  
                     onPathCreate={(path) => {
                         console.log("PATH CREATE", path, paths)
                         updateRef.current.addPath(path)
@@ -527,10 +487,7 @@ const [ publishWorkflow, publishInfo ] = useMutation((mutation, args: {id: strin
                         // p[ix] = path;
                         // setPaths(p)
                     }}
-                    onPathsChanged={(paths) => {
-                        console.log("Path Change", paths)
-                    }}
-                    onNodesChanged={(nodes) => console.log(nodes)}
+              
                     onSelect={(key, id) => {
                         console.log("Select", key, id)
                         if(shift){

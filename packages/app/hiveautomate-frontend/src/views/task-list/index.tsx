@@ -1,4 +1,4 @@
-import { Box, Button, List } from 'grommet';
+import { Box, Text, Button, List } from 'grommet';
 import React, { useState } from 'react';
 import { Add } from '@mui/icons-material';
 import { mutation, useMutation, useQuery } from '@hiveautomate/api'
@@ -30,7 +30,7 @@ export const TaskList : React.FC<TaskListProps> = (props) => {
         refetchQueries: [] //[query.hiveProcesses()]
     })
     // const workflow = query.hivePi
-    const processes = []// query.hiveProcesses();
+    const processes = query.automationTasks || []// query.hiveProcesses();
 
     return (
         <Box
@@ -47,9 +47,20 @@ export const TaskList : React.FC<TaskListProps> = (props) => {
                     openModal(false)
                 })
             }} />
-            <Box  background="accent-2" direction="row" justify="end">
-                <Button onClick={() => openModal(true)} icon={<Add />} />
-            </Box>
+            <Box  
+                align='center'
+                pad="xsmall"
+                background="accent-2" 
+                direction="row" 
+                justify="between">
+                    <Text>Tasks</Text>
+                    <Button 
+                        hoverIndicator
+                        plain
+                        style={{padding: 6, borderRadius: 3}}
+                        onClick={() => openModal(true)} 
+                        icon={<Add fontSize='small' />} />
+                </Box>
             <List 
                 onClickItem={({item}) => navigate(`${item.id}`)}
                 primaryKey={"name"}

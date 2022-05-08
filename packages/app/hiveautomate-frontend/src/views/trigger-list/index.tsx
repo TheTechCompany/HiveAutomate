@@ -1,4 +1,4 @@
-import { Box, Button, List } from 'grommet';
+import { Box, Text, Button, List } from 'grommet';
 import React, { useState } from 'react';
 import { Add } from '@mui/icons-material';
 import { mutation, useMutation, useQuery } from '@hiveautomate/api'
@@ -31,7 +31,7 @@ export const TriggerList : React.FC<TriggerListProps> = (props) => {
         refetchQueries: [] // [query.hivePipelineTriggers()]
     })
     // const workflow = query.hivePi
-    const triggers = [] //query.hivePipelineTriggers().map((x) => ({id: x.id, name: x.name}));
+    const triggers = query.automationTriggers || [] //query.hivePipelineTriggers().map((x) => ({id: x.id, name: x.name}));
 
     return (
         <Box
@@ -48,8 +48,19 @@ export const TriggerList : React.FC<TriggerListProps> = (props) => {
                     openModal(false)
                 })
             }} />
-            <Box  background="accent-2" direction="row" justify="end">
-                <Button onClick={() => openModal(true)} icon={<Add />} />
+            <Box  
+                align='center'
+                pad="xsmall"
+                background="accent-2" 
+                direction="row" 
+                justify="between">
+                <Text>Triggers</Text>
+                <Button 
+                    hoverIndicator
+                    plain
+                    style={{padding: 6, borderRadius: 3}}
+                    onClick={() => openModal(true)} 
+                    icon={<Add />} />
             </Box>
             <List 
                 onClickItem={({item}) => navigate(`${item.id}`)}

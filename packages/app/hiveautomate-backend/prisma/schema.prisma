@@ -9,3 +9,46 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+
+model Workflow {
+  id String @id
+  name String
+
+  nodes WorkflowNode[] @relation(name: "nodes")
+  edges WorkflowEdge[] @relation(name: "paths")
+
+  createdAt DateTime @default(now())
+
+  organisation String
+}
+
+model WorkflowNode {
+  id String @id
+
+  x Float
+  y Float
+
+  outputs WorkflowEdge[] @relation(name: "fromNode")
+  inputs WorkflowEdge[] @relation(name: "toNode")
+
+  workflow Workflow @relation(name: "nodes", references: [id], fields: [workflowId])
+  workflowId String
+}
+
+model WorkflowEdge {
+  id String @id
+  from WorkflowNode @relation(name: "fromNode", fields: [fromId], references: [id])
+  fromId String
+  to WorkflowNode @relation(name: "toNode", fields: [toId], references: [id])
+  toId String
+
+  workflow Workflow @relation(name: "paths", fields: [workflowId], references: [id])
+  workflowId String
+}
+
+model Task {
+  id String @id
+
+  organisation String
+}

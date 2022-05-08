@@ -27,6 +27,10 @@ export interface Scalars {
   Hash: any;
 }
 
+export interface AutomationInput {
+  name?: InputMaybe<Scalars["String"]>;
+}
+
 export const scalarsEnumsHash: import("gqty").ScalarsEnumsHash = {
   Boolean: true,
   Date: true,
@@ -36,19 +40,99 @@ export const scalarsEnumsHash: import("gqty").ScalarsEnumsHash = {
   String: true,
 };
 export const generatedSchema = {
+  Automation: {
+    __typename: { __type: "String!" },
+    createdAt: { __type: "DateTime" },
+    edges: { __type: "[AutomationEdge]" },
+    id: { __type: "ID" },
+    name: { __type: "String" },
+    nodes: { __type: "[AutomationNode]" },
+  },
+  AutomationEdge: {
+    __typename: { __type: "String!" },
+    from: { __type: "AutomationNode" },
+    id: { __type: "ID" },
+    to: { __type: "AutomationNode" },
+  },
+  AutomationInput: { name: { __type: "String" } },
+  AutomationNode: {
+    __typename: { __type: "String!" },
+    id: { __type: "ID" },
+    inputs: { __type: "[AutomationEdge]" },
+    outputs: { __type: "[AutomationEdge]" },
+  },
+  AutomationTask: {
+    __typename: { __type: "String!" },
+    id: { __type: "ID" },
+    name: { __type: "String" },
+  },
+  AutomationTrigger: {
+    __typename: { __type: "String!" },
+    id: { __type: "ID" },
+    name: { __type: "String" },
+  },
   HiveOrganisation: {
     __typename: { __type: "String!" },
     id: { __type: "ID!" },
   },
   HiveUser: { __typename: { __type: "String!" }, id: { __type: "ID!" } },
-  mutation: {},
+  mutation: {
+    __typename: { __type: "String!" },
+    createAutomation: {
+      __type: "Automation",
+      __args: { input: "AutomationInput" },
+    },
+    deleteAutomation: { __type: "Automation", __args: { id: "ID" } },
+    updateAutomation: {
+      __type: "Automation",
+      __args: { id: "ID", input: "AutomationInput" },
+    },
+  },
   query: {
     __typename: { __type: "String!" },
     _sdl: { __type: "String!" },
+    automationTasks: { __type: "[AutomationTask]" },
+    automationTriggers: { __type: "[AutomationTrigger]" },
+    automations: { __type: "[Automation]" },
     hash: { __type: "Hash", __args: { input: "String!" } },
   },
   subscription: {},
 } as const;
+
+export interface Automation {
+  __typename?: "Automation";
+  createdAt?: Maybe<ScalarsEnums["DateTime"]>;
+  edges?: Maybe<Array<Maybe<AutomationEdge>>>;
+  id?: Maybe<ScalarsEnums["ID"]>;
+  name?: Maybe<ScalarsEnums["String"]>;
+  nodes?: Maybe<Array<Maybe<AutomationNode>>>;
+}
+
+export interface AutomationEdge {
+  __typename?: "AutomationEdge";
+  from?: Maybe<AutomationNode>;
+  id?: Maybe<ScalarsEnums["ID"]>;
+  to?: Maybe<AutomationNode>;
+}
+
+export interface AutomationNode {
+  __typename?: "AutomationNode";
+  id?: Maybe<ScalarsEnums["ID"]>;
+  inputs?: Maybe<Array<Maybe<AutomationEdge>>>;
+  outputs?: Maybe<Array<Maybe<AutomationEdge>>>;
+}
+
+export interface AutomationTask {
+  __typename?: "AutomationTask";
+  id?: Maybe<ScalarsEnums["ID"]>;
+  name?: Maybe<ScalarsEnums["String"]>;
+}
+
+export interface AutomationTrigger {
+  __typename?: "AutomationTrigger";
+  id?: Maybe<ScalarsEnums["ID"]>;
+  name?: Maybe<ScalarsEnums["String"]>;
+}
 
 export interface HiveOrganisation {
   __typename?: "HiveOrganisation";
@@ -62,11 +146,22 @@ export interface HiveUser {
 
 export interface Mutation {
   __typename?: "Mutation";
+  createAutomation: (args?: {
+    input?: Maybe<AutomationInput>;
+  }) => Maybe<Automation>;
+  deleteAutomation: (args?: { id?: Maybe<Scalars["ID"]> }) => Maybe<Automation>;
+  updateAutomation: (args?: {
+    id?: Maybe<Scalars["ID"]>;
+    input?: Maybe<AutomationInput>;
+  }) => Maybe<Automation>;
 }
 
 export interface Query {
   __typename?: "Query";
   _sdl: ScalarsEnums["String"];
+  automationTasks?: Maybe<Array<Maybe<AutomationTask>>>;
+  automationTriggers?: Maybe<Array<Maybe<AutomationTrigger>>>;
+  automations?: Maybe<Array<Maybe<Automation>>>;
   hash: (args: { input: Scalars["String"] }) => Maybe<ScalarsEnums["Hash"]>;
 }
 
@@ -75,6 +170,11 @@ export interface Subscription {
 }
 
 export interface SchemaObjectTypes {
+  Automation: Automation;
+  AutomationEdge: AutomationEdge;
+  AutomationNode: AutomationNode;
+  AutomationTask: AutomationTask;
+  AutomationTrigger: AutomationTrigger;
   HiveOrganisation: HiveOrganisation;
   HiveUser: HiveUser;
   Mutation: Mutation;
@@ -82,6 +182,11 @@ export interface SchemaObjectTypes {
   Subscription: Subscription;
 }
 export type SchemaObjectTypesNames =
+  | "Automation"
+  | "AutomationEdge"
+  | "AutomationNode"
+  | "AutomationTask"
+  | "AutomationTrigger"
   | "HiveOrganisation"
   | "HiveUser"
   | "Mutation"

@@ -57,7 +57,7 @@
     "@emotion/styled": "^11.8.1",
     "@hexhive/auth-ui": "1.0.2-beta.21",
     "@hexhive/styles": "^0.0.6-alpha.13",
-    "@hexhive/ui": "^0.0.11",
+    "@hexhive/ui": "^0.0.12-alpha.11",
     "@hiveautomate/api": "^1.0.0",
     "@mui/icons-material": "^5.6.2",
     "@mui/material": "^5.6.4",

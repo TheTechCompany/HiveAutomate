@@ -1,19 +1,25 @@
 import { config } from 'dotenv'
 config()
 import { HiveGraph } from '@hexhive/graphql-server'
+import { PrismaClient } from '@prisma/client';
 
 import express from 'express'
+import schema from './schema';
 
 const app = express();
 
 (async () => {
 
+    const prisma = new PrismaClient();
+
+    const {typeDefs, resolvers} = schema(prisma);
+
     const hiveGraph = new HiveGraph({
-        dev: true,
+        dev: false,
         rootServer: process.env.ROOT_SERVER || 'http://localhost:7000',
         schema: {
-            typeDefs: ``,
-            resolvers: {}
+            typeDefs: typeDefs,
+            resolvers: resolvers
         }
     })
 

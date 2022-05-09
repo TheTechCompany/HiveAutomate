@@ -1,2 +1,5 @@
 config:
   aws:region: ap-southeast-2
+  hiveautomate:org: ultraviolet
+  hiveautomate:suffix: staging
+  hiveautomate:imageTag: staging

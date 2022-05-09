@@ -8,9 +8,9 @@ import schema from './schema';
 
 const app = express();
 
-(async () => {
+const prisma = new PrismaClient();
 
-    const prisma = new PrismaClient();
+(async () => {
 
     const {typeDefs, resolvers} = schema(prisma);
 

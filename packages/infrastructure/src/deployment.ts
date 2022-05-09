@@ -26,7 +26,7 @@ export const Deployment = (provider: Provider, rootServer: string, dbUrl: Output
                         imagePullPolicy: "Always",
                         name: appName,
                         image: `thetechcompany/hiveautomate-backend:${imageTag}`,
-                        ports: [{ name: "http", containerPort: 9010 }],
+                        ports: [{ name: "http", containerPort: 8020 }],
                         volumeMounts: [
                         ],
                         env: [
